@@ -23,51 +23,6 @@
     <button onclick="checkHypoallergenic()">Check if Hypoallergenic</button>
     
     <div id="hypoallergenic-data"></div>
-    
-    <script>
-        async function fetchHypoallergenicData() {
-            try {
-                const response = await fetch('https://dogapi.dog/api/v2/breeds');
-                const data = await response.json();
-                if (Array.isArray(data)) {
-                    return data;
-                } else if (data && data.breeds) {
-                    return data.breeds;
-                } else {
-                    displayError(new Error("Unexpected response format"));
-                }
-            } catch (error) {
-                displayError(error);
-            }
-        }
-    
-        function displayHypoallergenicData(data) {
-            const container = document.getElementById('hypoallergenic-data');
-            container.innerHTML = `<h2>Hypoallergenic Breeds</h2>`;
-            data.forEach(breed => {
-                const breedElement = document.createElement('div');
-                breedElement.innerHTML = `<h3>${breed.name}</h3><p>${breed.description}</p>`;
-                container.appendChild(breedElement);
-            });
-        }
-    
-        function displayError(error) {
-            const container = document.getElementById('hypoallergenic-data');
-            container.innerHTML = `<p>Error fetching data: ${error.message}</p>`;
-        }
-    
-        async function checkHypoallergenic() {
-            const breedInput = document.getElementById('breed-input').value.toLowerCase();
-            const data = await fetchHypoallergenicData();
-            const breed = data.find(b => b.name.toLowerCase() === breedInput);
-            if (breed) {
-                displayHypoallergenicData([breed]);
-            } else {
-                displayError(new Error("Breed not found"));
-            }
-        }
-    
-        document.addEventListener('DOMContentLoaded', fetchHypoallergenicData);
-    </script>
+
 </body>
 </html>
