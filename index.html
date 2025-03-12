@@ -17,6 +17,32 @@
     <p>For the API request, the following parameters were provided: The dog breed you would like to know so it can gather whether or not it is hypoallergenic</p>
     
     <h2>Give an example of where this API would be helpful.</h2>
-    <p>This API could be helpful trying to search about different dogs before adopting one and seeing how long they live and if you would be allergic before they enter your house.</p></p>
+    <p>This API could be helpful trying to search about different dogs before adopting one and seeing how long they live and if you would be allergic before they enter your house.</p>
+
+    <div id="hypoallergenic-data"></div>
+    <script>
+        async function fetchHypoallergenicData() {
+            try {
+                const response = await fetch('https://dogapi.dog/api/v2/breeds');
+                const data = await response.json();
+                displayHypoallergenicData(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        function displayHypoallergenicData(data) {
+            const hypoallergenicBreeds = data.filter(breed => breed.hypoallergenic);
+            const container = document.getElementById('hypoallergenic-data');
+            container.innerHTML = '<h2>Hypoallergenic Breeds</h2>';
+            hypoallergenicBreeds.forEach(breed => {
+                const breedElement = document.createElement('div');
+                breedElement.innerHTML = `<h3>${breed.name}</h3><p>${breed.description}</p>`;
+                container.appendChild(breedElement);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchHypoallergenicData);
+    </script>
 </body>
 </html>
