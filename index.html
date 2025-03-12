@@ -13,22 +13,26 @@
     <h2>Cite the website where you found it</h2>
     <p>The dog API documentation can be found at <a href="https://dogapi.dog/docs/api-v2">dog API documentation</a>. This was found through using a browse free API site</p>
     
-    <h2>Describe the options/parameters you used for the API request – i.e., what info did you need to provide (in the query string) to the API to get your results?</h2>
+    <h2>Describe the options/parameters you used for the API request</h2>
     <p>For the API request, the following parameters were provided: The dog breed you would like to know so it can gather whether or not it is hypoallergenic</p>
     
     <h2>Give an example of where this API would be helpful.</h2>
     <p>This API could be helpful trying to search about different dogs before adopting one and seeing how long they live and if you would be allergic before they enter your house.</p>
-
+    
+    <input type="text" id="breed-input" placeholder="Enter dog breed">
+    <button onclick="checkHypoallergenic()">Check if Hypoallergenic</button>
+    
     <div id="hypoallergenic-data"></div>
+    
     <script>
         async function fetchHypoallergenicData() {
             try {
                 const response = await fetch('https://dogapi.dog/api/v2/breeds');
                 const data = await response.json();
                 if (Array.isArray(data)) {
-                    displayHypoallergenicData(data);
+                    return data;
                 } else if (data && data.breeds) {
-                    displayHypoallergenicData(data.breeds);
+                    return data.breeds;
                 } else {
                     displayError(new Error("Unexpected response format"));
                 }
@@ -36,26 +40,33 @@
                 displayError(error);
             }
         }
+    
         function displayHypoallergenicData(data) {
-            if (!Array.isArray(data)) {
-                displayError(new Error("Expected an array but received " + typeof data));
-                return;
-            }
-            const hypoallergenicBreeds = data.filter(breed => breed.hypoallergenic);
             const container = document.getElementById('hypoallergenic-data');
-            container.innerHTML = '<h2>Hypoallergenic Breeds</h2>';
-            hypoallergenicBreeds.forEach(breed => {
+            container.innerHTML = `<h2>Hypoallergenic Breeds</h2>`;
+            data.forEach(breed => {
                 const breedElement = document.createElement('div');
                 breedElement.innerHTML = `<h3>${breed.name}</h3><p>${breed.description}</p>`;
                 container.appendChild(breedElement);
             });
         }
-
+    
         function displayError(error) {
             const container = document.getElementById('hypoallergenic-data');
             container.innerHTML = `<p>Error fetching data: ${error.message}</p>`;
         }
-
+    
+        async function checkHypoallergenic() {
+            const breedInput = document.getElementById('breed-input').value.toLowerCase();
+            const data = await fetchHypoallergenicData();
+            const breed = data.find(b => b.name.toLowerCase() === breedInput);
+            if (breed) {
+                displayHypoallergenicData([breed]);
+            } else {
+                displayError(new Error("Breed not found"));
+            }
+        }
+    
         document.addEventListener('DOMContentLoaded', fetchHypoallergenicData);
     </script>
 </body>
