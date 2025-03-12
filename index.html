@@ -32,6 +32,10 @@
         }
 
         function displayHypoallergenicData(data) {
+            if (!Array.isArray(data)) {
+                displayError(new Error("Expected an array but received " + typeof data));
+                return;
+            }
             const hypoallergenicBreeds = data.filter(breed => breed.hypoallergenic);
             const container = document.getElementById('hypoallergenic-data');
             container.innerHTML = '<h2>Hypoallergenic Breeds</h2>';
