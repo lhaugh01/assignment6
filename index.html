@@ -25,12 +25,17 @@
             try {
                 const response = await fetch('https://dogapi.dog/api/v2/breeds');
                 const data = await response.json();
-                displayHypoallergenicData(data);
+                if (Array.isArray(data)) {
+                    displayHypoallergenicData(data);
+                } else if (data && data.breeds) {
+                    displayHypoallergenicData(data.breeds);
+                } else {
+                    displayError(new Error("Unexpected response format"));
+                }
             } catch (error) {
                 displayError(error);
             }
         }
-
         function displayHypoallergenicData(data) {
             if (!Array.isArray(data)) {
                 displayError(new Error("Expected an array but received " + typeof data));
